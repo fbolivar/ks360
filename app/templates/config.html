@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Configuración{% endblock %}
+{% block nav_config %}active{% endblock %}
+
+{% block content %}
+<div class="page-head"><h1>Configuración del reporte</h1></div>
+
+{% if saved %}<div class="ok-msg">✔ Configuración guardada.</div>{% endif %}
+
+<form method="post" action="/config" class="form-card">
+  <label>Nombre del cliente
+    <input type="text" name="client_name" required
+           value="{{ config.client_name if config else '' }}">
+  </label>
+
+  <div class="form-row">
+    <label>Periodicidad
+      <select name="periodicity">
+        <option value="monthly" {{ 'selected' if not config or config.periodicity == 'monthly' else '' }}>Mensual</option>
+        <option value="weekly"  {{ 'selected' if config and config.periodicity == 'weekly' else '' }}>Semanal</option>
+      </select>
+    </label>
+    <label>Días del periodo
+      <input type="number" name="period_days" min="1" max="365"
+             value="{{ config.period_days if config else 30 }}">
+    </label>
+  </div>
+
+  <label>Destinatarios de correo <span class="hint">(separados por coma)</span>
+    <textarea name="recipients" rows="2"
+              placeholder="gerencia@cliente.com, soc@cliente.com">{{ config.recipients if config else '' }}</textarea>
+  </label>
+
+  <button type="submit" class="btn-primary">Guardar configuración</button>
+</form>
+
+<p class="muted small">
+  El envío por correo requiere SMTP configurado en <code>.env</code>. Si no está
+  configurado, el envío se omite sin afectar la generación del reporte.
+</p>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}KS360{% endblock %} · Click Solutions</title>
+  <link rel="icon" href="/static/img/favicon.png">
+  <link rel="stylesheet" href="/static/css/panel.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="/static/img/logo.png" alt="Click Solutions" class="brand-logo"
+           onerror="this.style.display='none'">
+      <span class="brand-name">KS<span>360</span></span>
+    </div>
+    {% if request.session.get('user') %}
+    <nav class="nav">
+      <a href="/" class="{% block nav_dash %}{% endblock %}">Dashboard</a>
+      <a href="/config" class="{% block nav_config %}{% endblock %}">Configuración</a>
+      <a href="/health" target="_blank">Health</a>
+      <a href="/logout" class="logout">Salir</a>
+    </nav>
+    {% endif %}
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    CK SOLUTIONS SAS — Click Solutions · info@clicksolutions.com.co · +601 2225078 ·
+    clicksolutions.com.co · <strong>Documento confidencial</strong>
+  </footer>
+</body>
+</html>

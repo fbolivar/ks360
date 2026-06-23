@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingreso · KS360</title>
+  <link rel="icon" href="/static/img/favicon.png">
+  <link rel="stylesheet" href="/static/css/panel.css">
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <div class="login-brand">
+      <img src="/static/img/logo.png" alt="Click Solutions"
+           onerror="this.style.display='none'">
+      <h1>KS<span>360</span></h1>
+      <p>Plataforma de Reportes de Seguridad Gestionada</p>
+    </div>
+
+    {% if error %}<div class="error-msg">{{ error }}</div>{% endif %}
+
+    <form method="post" action="/login">
+      <label>Usuario
+        <input type="text" name="username" autocomplete="username" required autofocus>
+      </label>
+      <label>Contraseña
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="btn-primary">Ingresar</button>
+    </form>
+  </div>
+  <p class="login-foot">CK SOLUTIONS SAS · Documento confidencial</p>
+</body>
+</html>

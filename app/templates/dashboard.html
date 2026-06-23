@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block nav_dash %}active{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="sub">Cliente: <strong>{{ client_name }}</strong> · Wazuh: <code>{{ wazuh_host }}</code></p>
+  </div>
+  <form method="post" action="/reports/generate">
+    <button type="submit" class="btn-primary">＋ Generar reporte ahora</button>
+  </form>
+</div>
+
+<!-- Estado de conexion (consulta async a /health) -->
+<div class="cards" id="health-cards">
+  <div class="card status" data-key="wazuh_api">
+    <div class="status-dot loading"></div>
+    <div>
+      <div class="card-label">API Wazuh</div>
+      <div class="card-value" data-field="wazuh_api">comprobando…</div>
+    </div>
+  </div>
+  <div class="card status" data-key="indexer">
+    <div class="status-dot loading"></div>
+    <div>
+      <div class="card-label">Indexer</div>
+      <div class="card-value" data-field="indexer">comprobando…</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Reportes generados</div>
+    <div class="card-value big">{{ reports|length }}</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Periodicidad</div>
+    <div class="card-value">
+      {{ 'Semanal' if config and config.periodicity == 'weekly' else 'Mensual' }}
+      · {{ config.period_days if config else 30 }} días
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">Reportes generados</h2>
+<div class="table-wrap">
+  <table class="grid">
+    <thead>
+      <tr><th>Fecha</th><th>Cliente</th><th>Periodo</th><th>Estado</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+      <tr>
+        <td class="nowrap">{{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ r.client_name }}</td>
+        <td>{{ r.period_label }}</td>
+        <td>
+          <span class="badge {{ 'ok' if r.status == 'ok' else 'warn' }}">
+            {{ 'OK' if r.status == 'ok' else 'Sin datos' }}
+          </span>
+        </td>
+        <td class="nowrap">
+          <a class="btn-sm" href="/reports/{{ r.id }}/download">Descargar PDF</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="muted">Aún no hay reportes. Genera el primero arriba.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Consulta el estado de conexion sin bloquear la carga del dashboard.
+  fetch('/health').then(r => r.json()).then(d => {
+    document.querySelectorAll('.card.status').forEach(card => {
+      const key = card.dataset.key;
+      const ok = d[key] === 'ok';
+      const dot = card.querySelector('.status-dot');
+      dot.classList.remove('loading');
+      dot.classList.add(ok ? 'ok' : 'down');
+      card.querySelector('[data-field="' + key + '"]').textContent = ok ? 'Conectado' : 'Sin conexión';
+    });
+  }).catch(() => {
+    document.querySelectorAll('.card.status .status-dot').forEach(d => {
+      d.classList.remove('loading'); d.classList.add('down');
+    });
+  });
+</script>
+{% endblock %}
