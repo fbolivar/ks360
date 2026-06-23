@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Informe Ejecutivo de Seguridad — {{ data.client_name }}</title>
+  <style>{{ css_inline }}</style>
+</head>
+<body>
+
+  <!-- ===================== PORTADA ===================== -->
+  <section class="cover">
+    {% if logo %}
+      <img class="cover-logo" src="{{ logo }}" alt="Click Solutions">
+    {% else %}
+      <div class="cover-logo placeholder">Click Solutions</div>
+    {% endif %}
+    <div class="cover-band"></div>
+    <h1 class="cover-title">Informe Ejecutivo de<br>Seguridad Gestionada (MDR)</h1>
+    <div class="cover-client">{{ data.client_name }}</div>
+    <table class="cover-meta">
+      <tr><td>Periodo</td><td>{{ data.period_label }}</td></tr>
+      <tr><td>Fecha de emisión</td><td>{{ data.generated_at_str }}</td></tr>
+      <tr><td>Plataforma</td><td>Wazuh {{ data.manager.version }}</td></tr>
+    </table>
+    <div class="cover-foot">{{ footer_text }}</div>
+  </section>
+
+  <!-- ===================== RESUMEN EJECUTIVO ===================== -->
+  <section class="page">
+    <h2><span class="num">1</span> Resumen ejecutivo</h2>
+
+    {% if data.connection.errors %}
+      <div class="alert-box">
+        <strong>Aviso de conexión:</strong>
+        <ul>
+          {% for e in data.connection.errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <p class="lead">{{ data.summary_text }}</p>
+
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-value">{{ data.agents.total }}</div>
+        <div class="kpi-label">Activos monitoreados</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">{{ data.alerts.total }}</div>
+        <div class="kpi-label">Alertas del periodo</div>
+      </div>
+      <div class="kpi critical">
+        <div class="kpi-value">{{ data.alerts.by_severity.critico }}</div>
+        <div class="kpi-label">Críticas</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">{{ data.vulnerabilities|length }}</div>
+        <div class="kpi-label">Vulnerabilidades</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COBERTURA ===================== -->
+  <section class="page">
+    <h2><span class="num">2</span> Estado de cobertura</h2>
+    <div class="two-col">
+      <div class="col-chart">
+        {% if charts.agents_donut %}
+          <img class="chart" src="{{ charts.agents_donut }}" alt="Agentes activos vs inactivos">
+        {% else %}
+          <p class="muted">Sin datos de agentes.</p>
+        {% endif %}
+      </div>
+      <div class="col-table">
+        <table class="data">
+          <thead><tr><th>Agente</th><th>IP</th><th>Estado</th></tr></thead>
+          <tbody>
+            {% for a in data.agents.items[:18] %}
+              <tr>
+                <td>{{ a.name }}</td>
+                <td>{{ a.ip }}</td>
+                <td>
+                  <span class="pill {{ 'ok' if a.status == 'active' else 'down' }}">
+                    {{ 'Activo' if a.status == 'active' else a.status|capitalize }}
+                  </span>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="3" class="muted">No hay agentes registrados.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% if data.agents.items|length > 18 %}
+          <p class="muted small">… y {{ data.agents.items|length - 18 }} agentes más.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ALERTAS ===================== -->
+  <section class="page">
+    <h2><span class="num">3</span> Resumen de alertas</h2>
+    <p>Total de alertas en el periodo: <strong>{{ data.alerts.total }}</strong>.
+       Escala de severidad por nivel de regla: <em>nivel ≥12 crítico, 10–11 alto,
+       7–9 medio, &lt;7 informativo</em>.</p>
+    {% if charts.alerts_bars %}
+      <img class="chart wide" src="{{ charts.alerts_bars }}" alt="Alertas por severidad">
+    {% else %}
+      <p class="muted">No se registraron alertas en el periodo.</p>
+    {% endif %}
+  </section>
+
+  <!-- ===================== INCIDENTES PRIORIZADOS ===================== -->
+  <section class="page">
+    <h2><span class="num">4</span> Incidentes priorizados (nivel ≥ 10)</h2>
+    {% if data.incidents %}
+      <table class="data">
+        <thead>
+          <tr><th>Fecha</th><th>Agente</th><th>Descripción</th><th>Nivel</th>
+              <th>MITRE</th><th>Acción recomendada</th></tr>
+        </thead>
+        <tbody>
+          {% for i in data.incidents[:20] %}
+            <tr>
+              <td class="nowrap">{{ i.date }}</td>
+              <td>{{ i.agent }}</td>
+              <td>{{ i.description }}</td>
+              <td><span class="lvl lvl-{{ 'crit' if i.level >= 12 else 'high' }}">{{ i.level }}</span></td>
+              <td class="nowrap">{{ i.mitre }}</td>
+              <td class="rec">{{ i.recommendation }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">No se detectaron incidentes de nivel ≥ 10 en el periodo.</p>
+    {% endif %}
+  </section>
+
+  <!-- ===================== VULNERABILIDADES ===================== -->
+  <section class="page">
+    <h2><span class="num">5</span> Vulnerabilidades</h2>
+    {% if data.vulnerabilities %}
+      <table class="data">
+        <thead>
+          <tr><th>Severidad</th><th>CVE / ID</th><th>Paquete</th><th>Descripción</th></tr>
+        </thead>
+        <tbody>
+          {% for v in data.vulnerabilities[:40] %}
+            <tr>
+              <td><span class="sev sev-{{ v.severity_key or 'na' }}">{{ v.severity }}</span></td>
+              <td class="nowrap">{{ v.cve }}</td>
+              <td>{{ v.package }}{% if v.package_version %} <span class="muted small">{{ v.package_version }}</span>{% endif %}</td>
+              <td>{{ v.description }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if data.vulnerabilities|length > 40 %}
+        <p class="muted small">… y {{ data.vulnerabilities|length - 40 }} vulnerabilidades más.</p>
+      {% endif %}
+    {% else %}
+      <p class="muted">Sin vulnerabilidades indexadas en el periodo.</p>
+    {% endif %}
+  </section>
+
+  <!-- ===================== CONCLUSIONES ===================== -->
+  <section class="page">
+    <h2><span class="num">6</span> Conclusión y recomendaciones</h2>
+    <ol class="recs">
+      {% for r in data.recommendations %}<li>{{ r }}</li>{% endfor %}
+    </ol>
+  </section>
+
+</body>
+</html>

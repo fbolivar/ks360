@@ -1,0 +1,153 @@
+/* ===========================================================================
+   KS360 — Estilos del reporte PDF (WeasyPrint)
+   Marca Click Solutions: naranja #f07e22
+   =========================================================================== */
+
+:root {
+  --primary: #f07e22;
+  --dark: #2b2b2b;
+  --muted: #7f8c8d;
+  --line: #e3e3e3;
+  --crit: #c0392b;
+  --high: #e67e22;
+  --med: #f1c40f;
+  --low: #27ae60;
+  --info: #7f8c8d;
+}
+
+/* ---- Pagina y pie de pagina en todas las hojas ---- */
+@page {
+  size: A4;
+  margin: 22mm 16mm 20mm 16mm;
+  @bottom-left {
+    content: "CK SOLUTIONS SAS — Click Solutions · Documento confidencial";
+    font-size: 7.5pt;
+    color: #999;
+  }
+  @bottom-right {
+    content: "Página " counter(page) " de " counter(pages);
+    font-size: 7.5pt;
+    color: #999;
+  }
+}
+@page :first {
+  margin: 0;
+  @bottom-left { content: ""; }
+  @bottom-right { content: ""; }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "DejaVu Sans", "Helvetica Neue", Arial, sans-serif;
+  color: var(--dark);
+  font-size: 10pt;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ---------------------------- PORTADA ---------------------------- */
+.cover {
+  page-break-after: always;
+  height: 100vh;
+  padding: 40mm 22mm 18mm 22mm;
+  position: relative;
+}
+.cover-logo { max-width: 62mm; max-height: 28mm; margin-bottom: 14mm; }
+.cover-logo.placeholder {
+  font-size: 22pt; font-weight: 800; color: var(--primary);
+}
+.cover-band {
+  width: 38mm; height: 5px; background: var(--primary); margin: 6mm 0 10mm;
+}
+.cover-title {
+  font-size: 28pt; font-weight: 800; line-height: 1.15; margin: 0 0 10mm;
+  color: var(--dark);
+}
+.cover-client {
+  font-size: 17pt; font-weight: 600; color: var(--primary); margin-bottom: 14mm;
+}
+.cover-meta { border-collapse: collapse; font-size: 11pt; }
+.cover-meta td { padding: 3px 14px 3px 0; }
+.cover-meta td:first-child { color: var(--muted); }
+.cover-meta td:last-child { font-weight: 600; }
+.cover-foot {
+  position: absolute; bottom: 16mm; left: 22mm; right: 22mm;
+  font-size: 7.5pt; color: #aaa; border-top: 1px solid var(--line); padding-top: 6px;
+}
+
+/* ---------------------------- SECCIONES ---------------------------- */
+.page { page-break-before: always; }
+
+h2 {
+  font-size: 15pt; color: var(--dark); margin: 0 0 8mm;
+  padding-bottom: 4px; border-bottom: 2px solid var(--primary);
+}
+h2 .num {
+  display: inline-block; background: var(--primary); color: white;
+  width: 22px; height: 22px; line-height: 22px; text-align: center;
+  border-radius: 5px; font-size: 11pt; margin-right: 8px;
+}
+.lead { font-size: 10.5pt; text-align: justify; }
+.muted { color: var(--muted); }
+.small { font-size: 8pt; }
+.nowrap { white-space: nowrap; }
+
+/* ---- KPIs ---- */
+.kpis { display: flex; gap: 8px; margin-top: 10mm; }
+.kpi {
+  flex: 1; border: 1px solid var(--line); border-radius: 8px;
+  padding: 10px; text-align: center; border-top: 3px solid var(--primary);
+}
+.kpi.critical { border-top-color: var(--crit); }
+.kpi-value { font-size: 22pt; font-weight: 800; color: var(--dark); }
+.kpi-label { font-size: 8pt; color: var(--muted); text-transform: uppercase; }
+
+/* ---- Aviso ---- */
+.alert-box {
+  background: #fff5ec; border-left: 4px solid var(--primary);
+  padding: 8px 12px; margin-bottom: 8mm; font-size: 9pt; border-radius: 4px;
+}
+.alert-box ul { margin: 4px 0 0; padding-left: 18px; }
+
+/* ---- Layout dos columnas ---- */
+.two-col { display: flex; gap: 10mm; align-items: flex-start; }
+.col-chart { width: 46%; }
+.col-table { width: 54%; }
+.chart { max-width: 100%; }
+.chart.wide { max-width: 90%; display: block; margin: 6mm auto; }
+
+/* ---- Tablas ---- */
+table.data { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+table.data th {
+  background: var(--dark); color: white; text-align: left;
+  padding: 6px 7px; font-weight: 600;
+}
+table.data td {
+  padding: 5px 7px; border-bottom: 1px solid var(--line); vertical-align: top;
+}
+table.data tr:nth-child(even) td { background: #fafafa; }
+td.rec { color: #444; font-size: 8pt; }
+
+/* ---- Pills / niveles / severidad ---- */
+.pill {
+  display: inline-block; padding: 1px 8px; border-radius: 10px;
+  font-size: 7.5pt; font-weight: 600;
+}
+.pill.ok { background: #e6f6ec; color: var(--low); }
+.pill.down { background: #fdecea; color: var(--crit); }
+
+.lvl { font-weight: 700; padding: 1px 7px; border-radius: 4px; color: white; }
+.lvl-crit { background: var(--crit); }
+.lvl-high { background: var(--high); }
+
+.sev { font-weight: 700; padding: 1px 8px; border-radius: 4px; color: white; font-size: 7.5pt; }
+.sev-critical { background: var(--crit); }
+.sev-high { background: var(--high); }
+.sev-medium, .sev-moderate { background: var(--med); color: #6b5d00; }
+.sev-low { background: var(--low); }
+.sev-untriaged, .sev-na { background: var(--info); }
+
+/* ---- Recomendaciones ---- */
+ol.recs { padding-left: 18px; }
+ol.recs li { margin-bottom: 6px; text-align: justify; }
