@@ -85,13 +85,7 @@ def ensure_default_tenant() -> "Tenant":
     try:
         tenant = db.get(Tenant, 1)
         if tenant is None:
-            tenant = Tenant(
-                id=1,
-                name=settings.client_name,
-                wazuh_host=settings.clean_host,
-                wazuh_api_user=settings.wazuh_api_user,
-                indexer_user=settings.indexer_user,
-            )
+            tenant = Tenant(id=1, name=settings.client_name)
             db.add(tenant)
             db.flush()
             db.add(
@@ -102,8 +96,13 @@ def ensure_default_tenant() -> "Tenant":
                     period_days=settings.report_days,
                 )
             )
-            db.commit()
-            db.refresh(tenant)
+        # Mantener el tenant por defecto sincronizado con el .env (fuente de
+        # verdad en modo mono-cliente). Evita hosts/credenciales obsoletos.
+        tenant.wazuh_host = settings.clean_host
+        tenant.wazuh_api_user = settings.wazuh_api_user
+        tenant.indexer_user = settings.indexer_user
+        db.commit()
+        db.refresh(tenant)
         return tenant
     finally:
         db.close()

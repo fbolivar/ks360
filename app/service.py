@@ -37,7 +37,11 @@ def generate_and_store(
         or settings.client_name
     )
 
-    result = generate_report_pdf(tenant=tenant, days=days, client_name=client_name)
+    # Mono-cliente: la conexion a Wazuh SIEMPRE viene del .env (fuente de verdad),
+    # no del host almacenado en el tenant. El tenant/config solo aportan
+    # client_name, dias y destinatarios. (Para multi-cliente real, en el futuro
+    # se pasaria `tenant=tenant` con credenciales propias por cliente.)
+    result = generate_report_pdf(tenant=None, days=days, client_name=client_name)
 
     report = GeneratedReport(
         tenant_id=tenant_id,
