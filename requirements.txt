@@ -1,4 +1,4 @@
-# KS360 - Plataforma de Reportes MSSP (Click Solutions)
+# CK360 - Plataforma de Reportes MSSP (Click Solutions)
 # Versiones fijadas, validadas en Ubuntu 26.04 / Python 3.14.
 # (instaladas en el servidor y congeladas con pip).
 

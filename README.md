@@ -1,4 +1,4 @@
-# KS360 — Plataforma de Reportes MSSP (Click Solutions)
+# CK360 — Plataforma de Reportes MSSP (Click Solutions)
 
 Aplicación web que consume datos de un servidor **Wazuh 4.14** (API REST +
 Indexer/OpenSearch) y genera **reportes ejecutivos de ciberseguridad en PDF** con

@@ -1,4 +1,4 @@
-"""KS360 - Plataforma de reportes ejecutivos de ciberseguridad (MSSP).
+"""CK360 - Plataforma de reportes ejecutivos de ciberseguridad (MSSP).
 
 Consume datos de un servidor Wazuh (API REST + Indexer/OpenSearch) y genera
 reportes PDF con la marca Click Solutions, ademas de un panel web para

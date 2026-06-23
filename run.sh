@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ----------------------------------------------------------------------------
-# KS360 - Script de arranque del panel web
+# CK360 - Script de arranque del panel web
 # Uso:  ./run.sh            (host 0.0.0.0, puerto 8000)
 #       HOST=127.0.0.1 PORT=8080 ./run.sh
 # ----------------------------------------------------------------------------
@@ -17,5 +17,5 @@ fi
 HOST="${HOST:-0.0.0.0}"
 PORT="${PORT:-8000}"
 
-echo "==> KS360 escuchando en http://${HOST}:${PORT}"
+echo "==> CK360 escuchando en http://${HOST}:${PORT}"
 exec uvicorn app.main:app --host "${HOST}" --port "${PORT}"

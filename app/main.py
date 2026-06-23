@@ -1,4 +1,4 @@
-"""KS360 — Panel web FastAPI.
+"""CK360 — Panel web FastAPI.
 
 Rutas:
   GET  /login | POST /login | GET /logout
@@ -46,12 +46,12 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 async def lifespan(app: FastAPI):
     init_db()
     start_scheduler()
-    logger.info("KS360 iniciado.")
+    logger.info("CK360 iniciado.")
     yield
     shutdown_scheduler()
 
 
-app = FastAPI(title="KS360 — Reportes MSSP", lifespan=lifespan)
+app = FastAPI(title="CK360 — Reportes MSSP", lifespan=lifespan)
 app.add_middleware(SessionMiddleware, secret_key=settings.session_secret)
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 

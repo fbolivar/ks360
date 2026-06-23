@@ -18,7 +18,7 @@ from .pdf import generate_report_pdf
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Genera un reporte PDF de KS360.")
+    parser = argparse.ArgumentParser(description="Genera un reporte PDF de CK360.")
     parser.add_argument(
         "--days", type=int, default=settings.report_days,
         help="Dias del periodo a reportar.",
