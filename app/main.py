@@ -190,9 +190,12 @@ def config_save(
 # ------------------------------------------------------------------- health
 @app.get("/health")
 def health():
-    """Chequeo de conexion a API e Indexer (JSON)."""
-    api_ok = WazuhClient().ping()
-    indexer_ok = IndexerClient().ping()
+    """Chequeo de conexion a API e Indexer (JSON).
+
+    Usa un timeout corto para no bloquear el panel si Wazuh no responde.
+    """
+    api_ok = WazuhClient(timeout=4).ping()
+    indexer_ok = IndexerClient(timeout=4).ping()
     status = "ok" if (api_ok and indexer_ok) else "degraded"
     return JSONResponse(
         {
