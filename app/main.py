@@ -141,7 +141,10 @@ def reports_download(report_id: int, request: Request, db: Session = Depends(get
     if not report or not Path(report.filepath).exists():
         return JSONResponse({"error": "Reporte no encontrado."}, status_code=404)
     return FileResponse(
-        report.filepath, media_type="application/pdf", filename=report.filename
+        report.filepath,
+        media_type="application/pdf",
+        filename=report.filename,
+        headers={"Cache-Control": "no-store, must-revalidate"},
     )
 
 
