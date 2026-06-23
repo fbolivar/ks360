@@ -226,7 +226,7 @@ def collect_report_data(
         "generated_at_str": now.strftime("%Y-%m-%d %H:%M UTC"),
         "manager": {"version": "desconocida", "connected": False},
         "connection": {"api_ok": False, "indexer_ok": False, "errors": []},
-        "agents": {"items": [], "total": 0, "active": 0, "inactive": 0},
+        "agents": {"list": [], "total": 0, "active": 0, "inactive": 0},
         "alerts": {
             "by_level": {},
             "total": 0,
@@ -249,7 +249,7 @@ def collect_report_data(
         agents = client.get_agents()
         active = sum(1 for a in agents if a["status"] == "active")
         data["agents"] = {
-            "items": agents,
+            "list": agents,
             "total": len(agents),
             "active": active,
             "inactive": len(agents) - active,

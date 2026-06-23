@@ -75,7 +75,7 @@
         <table class="data">
           <thead><tr><th>Agente</th><th>IP</th><th>Estado</th></tr></thead>
           <tbody>
-            {% for a in data.agents.items[:18] %}
+            {% for a in data.agents.list[:18] %}
               <tr>
                 <td>{{ a.name }}</td>
                 <td>{{ a.ip }}</td>
@@ -90,8 +90,8 @@
             {% endfor %}
           </tbody>
         </table>
-        {% if data.agents.items|length > 18 %}
-          <p class="muted small">… y {{ data.agents.items|length - 18 }} agentes más.</p>
+        {% if data.agents.list|length > 18 %}
+          <p class="muted small">… y {{ data.agents.list|length - 18 }} agentes más.</p>
         {% endif %}
       </div>
     </div>
